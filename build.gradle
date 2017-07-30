@@ -41,9 +41,9 @@ ext {
     bintrayName = 'CustomNumberKeyBoard'
 
     publishedGroupId = 'com.carlos.number.keyboard'
-    artifact = 'customNumberKeyBoard'
+    artifact = 'CustomNumberKeyBoard'
     libraryName = 'CustomNumberKeyBoard'
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.２'
 
     libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
 
