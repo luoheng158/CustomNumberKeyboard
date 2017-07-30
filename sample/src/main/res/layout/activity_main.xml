@@ -18,7 +18,8 @@
         app:key_board_type="number_with_decimals"
         app:key_item_background="@drawable/keyboard_item_normal_clicked_bg"
         app:key_text_color="@color/primaryBlue"
-        app:key_text_size="25dp"/>
+        app:key_text_size="25dp"
+        app:key_board_line_res="@drawable/keyboard_line"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -55,7 +56,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:background="#333333"/>
+                android:background="#FF2D4BA3"/>
 
             <com.carlos.number.keyboard.CurrencyEditText
                 android:id="@+id/et_currency2"
@@ -78,7 +79,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:background="#333333"/>
+                android:background="#FF2D4BA3"/>
 
             <com.carlos.number.keyboard.NumberDecimalEditText
                 android:id="@+id/et_number"
@@ -101,7 +102,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:background="#333333"/>
+                android:background="#FF2D4BA3"/>
 
             <com.carlos.number.keyboard.NumberDecimalEditText
                 android:id="@+id/et_phone_number"
@@ -124,7 +125,30 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:background="#333333"/>
+                android:background="#FF2D4BA3"/>
+
+            <com.carlos.number.keyboard.NumberDecimalEditText
+                android:id="@+id/et_phone_number_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="left|center_vertical"
+                android:hint="phone number keyboard has line"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textColorHint="#cccccc"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp"
+                app:decimal_digits="0"
+                app:max_input_integers="11"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#FF2D4BA3"/>
 
         </LinearLayout>
     </ScrollView>

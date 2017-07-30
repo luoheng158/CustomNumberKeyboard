@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     private NumberDecimalEditText mNumberDecimalEditText;
     private NumberDecimalEditText mPhoneNumberEditText;
+    private NumberDecimalEditText mPhoneNumberLineEditText;
+
     private KeyBoardLayout mKeyBoardLayout;
 
     @Override
@@ -35,12 +37,17 @@ public class MainActivity extends AppCompatActivity {
         mPhoneNumberEditText = (NumberDecimalEditText) findViewById(R.id.et_phone_number);
         mPhoneNumberEditText.setOnFocusChangeListener(mNumberWithClearKeyboard);
 
+        mPhoneNumberLineEditText =  (NumberDecimalEditText) findViewById(R.id.et_phone_number_line);
+        mPhoneNumberLineEditText.setOnFocusChangeListener(mNumberWithClearWitｈLineKeyboard);
+
         mKeyBoardLayout = (KeyBoardLayout) findViewById(R.id.keyboard_layout);
         mKeyBoardLayout.addKeyBoardCallback(mCurrencyTwoDecimalDigitsView);
         mKeyBoardLayout.addKeyBoardCallback(mCurrencyNoneDecimalDigitsView);
         mKeyBoardLayout.addKeyBoardCallback(mNumberDecimalEditText);
         mKeyBoardLayout.addKeyBoardCallback(mPhoneNumberEditText);
+        mKeyBoardLayout.addKeyBoardCallback(mPhoneNumberLineEditText);
 
+        mKeyBoardLayout.setDrawLine(false);
         mKeyBoardLayout.showKeyBoard();
     }
 
@@ -49,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 mKeyBoardLayout.setKeyBoardType(KeyBoardLayout.TYPE_KEY_BOARD_NUMBER_WITH_DECIMALS);
+                mKeyBoardLayout.setDrawLine(false);
                 mKeyBoardLayout.showKeyBoard();
             }
         }
@@ -59,6 +67,18 @@ public class MainActivity extends AppCompatActivity {
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 mKeyBoardLayout.setKeyBoardType(KeyBoardLayout.TYPE_KEY_BOARD_NUMBER_WITH_CLEAR);
+                mKeyBoardLayout.setDrawLine(false);
+                mKeyBoardLayout.showKeyBoard();
+            }
+        }
+    };
+
+    private View.OnFocusChangeListener mNumberWithClearWitｈLineKeyboard =  new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                mKeyBoardLayout.setKeyBoardType(KeyBoardLayout.TYPE_KEY_BOARD_NUMBER_WITH_CLEAR);
+                mKeyBoardLayout.setDrawLine(true);
                 mKeyBoardLayout.showKeyBoard();
             }
         }

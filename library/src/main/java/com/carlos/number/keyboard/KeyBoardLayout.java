@@ -2,6 +2,7 @@ package com.carlos.number.keyboard;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -315,17 +316,22 @@ public class KeyBoardLayout extends RecyclerView {
         // dynamic line divider.
         removeItemDecoration(mVerticalDivider);
         removeItemDecoration(mHorizontalDivider);
+        setBackgroundResource(0);
         if (mDrawLine) {
+            setBackgroundResource(mLineRes);
             if (mVerticalDivider == null) {
                 mVerticalDivider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
             }
-            mVerticalDivider.setDrawable(getResources().getDrawable(mLineRes));
+
+            Bitmap verticalBp = BitmapUtil.drawableToBitmap((getResources().getDrawable(mLineRes)));
+            mVerticalDivider.setDrawable(BitmapUtil.bitmapToDrawable(getResources(), BitmapUtil.bitmapScale(verticalBp, 0.5f)));
             addItemDecoration(mVerticalDivider);
 
             if (mHorizontalDivider == null) {
                 mHorizontalDivider = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
             }
-            mHorizontalDivider.setDrawable(getResources().getDrawable(mLineRes));
+            Bitmap horizontalBp = BitmapUtil.drawableToBitmap((getResources().getDrawable(mLineRes)));
+            mHorizontalDivider.setDrawable(BitmapUtil.bitmapToDrawable(getResources(), BitmapUtil.bitmapScale(horizontalBp, 0.5f)));
             addItemDecoration(mHorizontalDivider);
         }
     }
