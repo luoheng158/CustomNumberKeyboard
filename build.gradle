@@ -37,7 +37,7 @@ ext {
     junit = 'junit:junit:4.12'
     easyrecyclerview = 'com.jude:easyrecyclerview:4.4.0'
 
-    bintrayRepo = 'carlos'
+    bintrayRepo = 'Android'
     bintrayName = 'CustomNumberKeyBoard'
 
     publishedGroupId = 'com.carlos.number.keyboard'
