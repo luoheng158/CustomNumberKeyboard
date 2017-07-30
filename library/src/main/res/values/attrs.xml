@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="KeyBoardLayout">
+        <attr name="key_layout_background" format="reference"/>
+        <attr name="key_item_background" format="reference"/>
+        <attr name="key_text_color" format="reference"/>
+        <attr name="key_text_size" format="dimension"/>
+        <attr name="key_board_del_res" format="reference"/>
+        <attr name="key_board_clear_text" format="string"/>
+        <attr name="key_board_with_line" format="boolean"/>
+        <attr name="key_board_line_res" format="reference"/>
+        <attr name="key_board_type">
+            <enum name="number_with_decimals" value="0"/>
+            <enum name="number_with_clear" value="5"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="NumberDecimalEditText">
+        <attr name="decimal_digits" format="integer"/>
+        <attr name="max_input_integers" format="integer"/>
+    </declare-styleable>
+
+</resources>

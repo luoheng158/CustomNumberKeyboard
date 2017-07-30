@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.carlos.number.keyboard.KeyBoardLayout
+        android:id="@+id/keyboard_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:key_board_clear_text="Clear"
+        app:key_board_del_res="@drawable/icon_numeric_keyboard_blue_delete"
+        app:key_board_type="number_with_decimals"
+        app:key_item_background="@drawable/keyboard_item_normal_clicked_bg"
+        app:key_text_color="@color/primaryBlue"
+        app:key_text_size="25dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/keyboard_layout"
+        android:layout_alignParentTop="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <com.carlos.number.keyboard.CurrencyEditText
+                android:id="@+id/et_currency1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="right|center_vertical"
+                android:hint="0.00"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textColorHint="#cccccc"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp"
+                app:decimal_digits="2"
+                app:max_input_integers="12"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#333333"/>
+
+            <com.carlos.number.keyboard.CurrencyEditText
+                android:id="@+id/et_currency2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="left|center_vertical"
+                android:hint="0"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textColorHint="#cccccc"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp"
+                app:decimal_digits="0"
+                app:max_input_integers="12"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#333333"/>
+
+            <com.carlos.number.keyboard.NumberDecimalEditText
+                android:id="@+id/et_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="left|center_vertical"
+                android:hint="0.00"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textColorHint="#cccccc"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp"
+                app:decimal_digits="2"
+                app:max_input_integers="12"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#333333"/>
+
+            <com.carlos.number.keyboard.NumberDecimalEditText
+                android:id="@+id/et_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="left|center_vertical"
+                android:hint="phone number"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textColorHint="#cccccc"
+                android:textCursorDrawable="@null"
+                android:textSize="20sp"
+                app:decimal_digits="0"
+                app:max_input_integers="11"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#333333"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
