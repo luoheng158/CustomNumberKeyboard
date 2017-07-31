@@ -43,11 +43,11 @@ ext {
     publishedGroupId = 'com.carlos.number.keyboard'
     artifact = 'CustomNumberKeyBoard'
     libraryName = 'CustomNumberKeyBoard'
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.1.2'
 
     libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
 
-    siteUrl = 'https://github.com/luoheng158/CustomNumberKeyboards'
+    siteUrl = 'https://github.com/luoheng158/CustomNumberKeyboard'
     gitUrl = 'https://github.com/luoheng158/CustomNumberKeyboard.git'
 
     developerId = 'carlos'
