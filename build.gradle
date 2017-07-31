@@ -43,7 +43,7 @@ ext {
     publishedGroupId = 'com.carlos.number.keyboard'
     artifact = 'CustomNumberKeyBoard'
     libraryName = 'CustomNumberKeyBoard'
-    libraryVersion = '0.1.2'
+    libraryVersion = '0.1.3'
 
     libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
 
