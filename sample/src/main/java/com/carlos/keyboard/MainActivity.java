@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         mPhoneNumberEditText = (NumberDecimalEditText) findViewById(R.id.et_phone_number);
         mPhoneNumberEditText.setOnFocusChangeListener(mNumberWithClearKeyboard);
-
         mPhoneNumberLineEditText =  (NumberDecimalEditText) findViewById(R.id.et_phone_number_line);
         mPhoneNumberLineEditText.setOnFocusChangeListener(mNumberWithClearWitｈLineKeyboard);
 

@@ -26,9 +26,9 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
 
     private static final String MATCHER_PATTERN_LIMIT_LEN_PLACE_HOLDER = "^\\d{0,%s}(\\.\\d{0,%s}){0,%s}$";
 
-    private Map<Integer, Pattern> mNoLimitLengthPatternCache;
+    private Map<String, Pattern> mNoLimitLengthPatternCache;
 
-    private Map<Integer, Pattern> mLimitLengthPatternCache;
+    private Map<String, Pattern> mLimitLengthPatternCache;
     private StringBuffer mRawStringBuffer = new StringBuffer();
 
     private int mDecimalDigits;
@@ -143,11 +143,12 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
     }
 
     private void handleInputText(String text, boolean limitLength) {
-        Map<Integer, Pattern> map = limitLength ? mLimitLengthPatternCache : mNoLimitLengthPatternCache;
+        Map<String, Pattern> map = limitLength ? mLimitLengthPatternCache : mNoLimitLengthPatternCache;
         try {
             int rawSelection = getRawSelection(formatDisplayText(mRawStringBuffer));
             mRawStringBuffer.insert(rawSelection, text);
-            if (map.containsKey(mDecimalDigits) && !map.get(mDecimalDigits).matcher(mRawStringBuffer).matches()) {
+            String key = generateKey();
+            if (map.containsKey(key) && !map.get(key).matcher(mRawStringBuffer).matches()) {
                 mRawStringBuffer.deleteCharAt(rawSelection);
                 return;
             }
@@ -172,13 +173,24 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      * @param text
      */
     public void setRawText(CharSequence text) {
-        clearRawText();
         if (TextUtils.isEmpty(text)) {
+            clearRawText();
             return;
         }
+        int index = 0;
+        String key = generateKey();
+        mRawStringBuffer.setLength(0);
         for (int i = 0, len = text.length(); i < len; i++) {
-            handleInputText(String.valueOf(text.charAt(i)), false);
+            mRawStringBuffer.insert(index++, text.charAt(i));
+            if (mNoLimitLengthPatternCache.containsKey(key)
+                    && !mNoLimitLengthPatternCache.get(key).matcher(mRawStringBuffer).matches()) {
+                mRawStringBuffer.deleteCharAt(--index);
+                if (mDecimalDigits <= 0 && text.charAt(i) == '.') {
+                    break;
+                }
+            }
         }
+        updateText(mRawStringBuffer.length());
     }
 
     /**
@@ -211,14 +223,15 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      * build patterns.
      */
     public void buildPatterns() {
-        if (!mNoLimitLengthPatternCache.containsKey(mDecimalDigits)) {
-            Pattern p = Pattern.compile(String.format(MATCHER_PATTERN_PLACE_HOLDER, mDecimalDigits, mDecimalDigits > 0 ? 1 : 0));
-            mNoLimitLengthPatternCache.put(mDecimalDigits, p);
-        }
-        if (!mLimitLengthPatternCache.containsKey(mDecimalDigits)) {
-            Pattern p = Pattern.compile(String.format(MATCHER_PATTERN_LIMIT_LEN_PLACE_HOLDER, mInputMaxIntegers, mDecimalDigits, mDecimalDigits > 0 ? 1 : 0));
-            mLimitLengthPatternCache.put(mDecimalDigits, p);
-        }
+        Pattern p = Pattern.compile(String.format(MATCHER_PATTERN_PLACE_HOLDER, mDecimalDigits, mDecimalDigits > 0 ? 1 : 0));
+        mNoLimitLengthPatternCache.put(generateKey(), p);
+        p = Pattern.compile(String.format(MATCHER_PATTERN_LIMIT_LEN_PLACE_HOLDER, mInputMaxIntegers, mDecimalDigits, mDecimalDigits > 0 ? 1 : 0));
+        mLimitLengthPatternCache.put(generateKey(), p);
+    }
+
+    private String generateKey() {
+        return mDecimalDigits + "-" + mInputMaxIntegers;
+
     }
 
     /**
