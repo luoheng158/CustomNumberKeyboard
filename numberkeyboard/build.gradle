@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 25
+        versionCode 1
+        version = "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.jude:easyrecyclerview:4.4.0'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile  'com.android.support:support-annotations:25.2.0'
+    testCompile 'junit:junit:4.12'
+}
+
+ext {
+
+    bintrayRepo = 'Android'
+    bintrayName = 'NumberKeyBoard'
+
+    publishedGroupId = 'com.carlos.widget'
+    artifact = 'numberkeyboard'
+    libraryName = 'numberkeyboard'
+    libraryVersion = '0.1.10'
+
+    libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
+
+    siteUrl = 'https://github.com/luoheng158/CustomNumberKeyboard'
+    gitUrl = 'https://github.com/luoheng158/CustomNumberKeyboard.git'
+
+    developerId = 'carlos'
+    developerName = 'Carlos Luo'
+    developerEmail = 'luoheng158@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'
