@@ -29,7 +29,7 @@ Please feel free to use this.
 ```groovy
 dependencies {
   // jCenter
-  compile 'com.carlos.widget:numberkeyboard:0.1.10'
+  compile 'com.carlos.widget:numberkeyboard:0.1.+'
 }
 ```
 
