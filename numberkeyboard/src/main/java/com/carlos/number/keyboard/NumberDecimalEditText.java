@@ -26,9 +26,12 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
 
     private static final String MATCHER_PATTERN_LIMIT_LEN_PLACE_HOLDER = "^\\d{0,%s}(\\.\\d{0,%s}){0,%s}$";
 
+    public static final String STR_DOT = ".";
+
     private Map<String, Pattern> mNoLimitLengthPatternCache;
 
     private Map<String, Pattern> mLimitLengthPatternCache;
+
     private StringBuffer mRawStringBuffer = new StringBuffer();
 
     private int mDecimalDigits;
@@ -102,7 +105,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
             public void afterTextChanged(Editable s) {
                 if (mMayChangedByClipboard) {
                     String text = s.toString();
-                    if (text == null || !text.equals(formatDisplayText(mRawStringBuffer))) {
+                    if (text == null || !text.equals(formatDisplayText(mRawStringBuffer.toString()))) {
                         // simple to clear.
                         clearRawText();
                     }
@@ -120,7 +123,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
 
     @Override
     public void onTextDelClicked() {
-        int rawSelection = getRawSelection(formatDisplayText(mRawStringBuffer));
+        int rawSelection = getRawSelection();
         if (rawSelection <= 0) {
             return;
         }
@@ -145,7 +148,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
     private void handleInputText(String text, boolean limitLength) {
         Map<String, Pattern> map = limitLength ? mLimitLengthPatternCache : mNoLimitLengthPatternCache;
         try {
-            int rawSelection = getRawSelection(formatDisplayText(mRawStringBuffer));
+            int rawSelection = getRawSelection();
             mRawStringBuffer.insert(rawSelection, text);
             String key = generateKey();
             if (map.containsKey(key) && !map.get(key).matcher(mRawStringBuffer).matches()) {
@@ -160,11 +163,12 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
     }
 
     private void updateText(int rawSelection) {
-        CharSequence formatStr = formatDisplayText(mRawStringBuffer);
+        String rawStr = mRawStringBuffer.toString();
+        String formatStr = formatDisplayText(rawStr);
         mMayChangedByClipboard = false;
         setText(formatStr);
         mMayChangedByClipboard = true;
-        setSelection(resolveDisplaySelectionFormRawSection(formatStr, mRawStringBuffer, rawSelection));
+        setSelection(resolveDisplaySelectionFormRawSection(rawSelection));
     }
 
     /**
@@ -185,7 +189,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
             if (mNoLimitLengthPatternCache.containsKey(key)
                     && !mNoLimitLengthPatternCache.get(key).matcher(mRawStringBuffer).matches()) {
                 mRawStringBuffer.deleteCharAt(--index);
-                if (mDecimalDigits <= 0 && text.charAt(i) == '.') {
+                if (mDecimalDigits <= 0 && STR_DOT.equals(String.valueOf(text.charAt(i)))) {
                     break;
                 }
             }
@@ -249,7 +253,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      * @param sb
      * @return
      */
-    protected CharSequence formatDisplayText(StringBuffer sb) {
+    protected String formatDisplayText(String sb) {
         return sb;
     }
 
@@ -258,19 +262,17 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      *
      * @return
      */
-    protected int getRawSelection(CharSequence displayStr) {
+    protected int getRawSelection() {
         return getSelectionStart();
     }
 
     /**
      * resolve display section for raw section.
      *
-     * @param displayStr
-     * @param rawStr
      * @param rawSelection
      * @return
      */
-    protected int resolveDisplaySelectionFormRawSection(CharSequence displayStr, CharSequence rawStr, int rawSelection) {
+    protected int resolveDisplaySelectionFormRawSection(int rawSelection) {
         return rawSelection;
     }
 

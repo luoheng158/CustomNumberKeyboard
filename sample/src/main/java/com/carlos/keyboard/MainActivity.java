@@ -8,6 +8,10 @@ import com.carlos.number.keyboard.CurrencyEditText;
 import com.carlos.number.keyboard.KeyBoardLayout;
 import com.carlos.number.keyboard.NumberDecimalEditText;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+
 public class MainActivity extends AppCompatActivity {
 
     private CurrencyEditText mCurrencyTwoDecimalDigitsView;
@@ -28,8 +32,15 @@ public class MainActivity extends AppCompatActivity {
         mCurrencyTwoDecimalDigitsView.setFocusableInTouchMode(true);
         mCurrencyTwoDecimalDigitsView.setOnFocusChangeListener(mNumberWithDecimalsKeyboard);
 
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+        DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) currencyFormatter).getDecimalFormatSymbols();
+        decimalFormatSymbols.setCurrencySymbol("");
+        ((DecimalFormat) currencyFormatter).setDecimalFormatSymbols(decimalFormatSymbols);
+        mCurrencyTwoDecimalDigitsView.setCurrencyFormatter(currencyFormatter);
+
         mCurrencyNoneDecimalDigitsView = (CurrencyEditText) findViewById(R.id.et_currency2);
         mCurrencyNoneDecimalDigitsView.setOnFocusChangeListener(mNumberWithDecimalsKeyboard);
+        mCurrencyNoneDecimalDigitsView.setCurrencyFormatter(currencyFormatter);
 
         mNumberDecimalEditText = (NumberDecimalEditText) findViewById(R.id.et_number);
         mNumberDecimalEditText.setOnFocusChangeListener(mNumberWithDecimalsKeyboard);

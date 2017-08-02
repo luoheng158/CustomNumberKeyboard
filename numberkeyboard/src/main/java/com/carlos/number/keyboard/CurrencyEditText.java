@@ -3,9 +3,12 @@ package com.carlos.number.keyboard;
 import android.content.Context;
 import android.util.AttributeSet;
 
+
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+
 
 /**
  * Created by carlos on 27/07/2017.
@@ -15,7 +18,9 @@ public class CurrencyEditText extends NumberDecimalEditText {
 
     private NumberFormat mCurrencyFormatter;
     private String mGroupingSeparator;
+    private String mDecimalSeparator;
     private StringBuffer mDisplayBuffer;
+    private StringBuffer mTempDisplayBuffer;
 
     public CurrencyEditText(Context context) {
         super(context);
@@ -33,27 +38,27 @@ public class CurrencyEditText extends NumberDecimalEditText {
     protected void init(Context context, AttributeSet attrs) {
         super.init(context, attrs);
         mDisplayBuffer = new StringBuffer();
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-        DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) currencyFormatter).getDecimalFormatSymbols();
-        decimalFormatSymbols.setCurrencySymbol("");
-        ((DecimalFormat) currencyFormatter).setDecimalFormatSymbols(decimalFormatSymbols);
-        setCurrencyFormatter(currencyFormatter);
+        mTempDisplayBuffer = new StringBuffer();
+        setCurrencyFormatter(NumberFormat.getCurrencyInstance());
     }
 
     /**
      * set currency formatter.
+     *
      * @param currencyFormatter
      */
     public void setCurrencyFormatter(NumberFormat currencyFormatter) {
         mCurrencyFormatter = currencyFormatter;
         DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) currencyFormatter).getDecimalFormatSymbols();
         mGroupingSeparator = String.valueOf(decimalFormatSymbols.getGroupingSeparator());
+        mDecimalSeparator = String.valueOf(decimalFormatSymbols.getDecimalSeparator());
     }
 
     @Override
-    protected int getRawSelection(CharSequence displayStr) {
+    protected int getRawSelection() {
         int selection = getSelectionStart();
         int subCount = 0;
+        String displayStr = mDisplayBuffer.toString();
         for (int i = 0, len = Math.min(displayStr.length(), selection); i < len; i++) {
             if (mGroupingSeparator.equals(String.valueOf(displayStr.charAt(i)))) {
                 subCount++;
@@ -63,18 +68,41 @@ public class CurrencyEditText extends NumberDecimalEditText {
     }
 
     @Override
-    protected CharSequence formatDisplayText(StringBuffer sb) {
-        double number;
-        try {
-            number = Double.parseDouble(sb.toString());
-        } catch (NumberFormatException e) {
-            return sb;
-        }
+    protected String formatDisplayText(String sb) {
         mDisplayBuffer.setLength(0);
-        CharSequence displayText = mCurrencyFormatter.format(number);
-        if (displayText == null) {
-            return mDisplayBuffer;
+        try {
+            Double.parseDouble(sb);
+        } catch (NumberFormatException e) {
+            mDisplayBuffer.append(sb.replace(STR_DOT, mDecimalSeparator));
+            return mDisplayBuffer.toString();
         }
+        int dotIndex = sb.indexOf(STR_DOT);
+        int decimals = 0;
+        boolean dotAtTheEnd = false;
+        if (dotIndex != -1) {
+            decimals = sb.length() - dotIndex - 1;
+            dotAtTheEnd = decimals == 0;
+        }
+        mCurrencyFormatter.setMaximumFractionDigits(decimals);
+        mCurrencyFormatter.setMinimumFractionDigits(decimals);
+        String displayText = mCurrencyFormatter.format(new BigDecimal(sb));
+        if (displayText == null) {
+            return mDisplayBuffer.toString();
+        }
+        mTempDisplayBuffer.setLength(0);
+        mTempDisplayBuffer.append(displayText);
+        for (int i = mTempDisplayBuffer.length() - 1; i >= 0; i--) {
+            if (!String.valueOf(mTempDisplayBuffer.charAt(i)).equals(mGroupingSeparator)) {
+                break;
+            }
+            mTempDisplayBuffer.deleteCharAt(i);
+        }
+        if (dotAtTheEnd && !mTempDisplayBuffer.toString().endsWith(mDecimalSeparator)) {
+            mTempDisplayBuffer.append(mDecimalSeparator);
+        }
+        displayText = mTempDisplayBuffer.toString();
+        sb = sb.replace(STR_DOT, mDecimalSeparator);
+
         int offsetCount = displayText.length() - sb.length();
         for (int i = sb.length() - 1; i >= 0; i--) {
             String rawStr = String.valueOf(sb.charAt(i));
@@ -94,11 +122,12 @@ public class CurrencyEditText extends NumberDecimalEditText {
             i++;
         }
         // keep display buffer have all sb buffer.
-        return mDisplayBuffer.reverse();
+        return mDisplayBuffer.reverse().toString();
     }
 
     @Override
-    protected int resolveDisplaySelectionFormRawSection(CharSequence displayStr, CharSequence rawStr, int rawSelection) {
+    protected int resolveDisplaySelectionFormRawSection(int rawSelection) {
+        String displayStr = mDisplayBuffer.toString();
         int len = displayStr.length();
         for (int i = 0; i < len; i++) {
             if (rawSelection == 0) {
