@@ -3,6 +3,8 @@ package com.carlos.number.keyboard;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -27,6 +29,9 @@ import java.util.List;
 public class KeyBoardLayout extends RecyclerView {
 
     private static final String TAG = "KeyBoardLayout";
+
+    private static final long KEY_BOARD_LONG_PRESS_DEL_TIMER_INTERVAL = 100L;
+    private static final int MSG_KEY_BOARD_LONG_PRESS_DEL = 0;
 
     private static final String DECIMALS = ".";
     private static final String NUMBER_1 = "1";
@@ -88,6 +93,16 @@ public class KeyBoardLayout extends RecyclerView {
 
     private List<KeyBoardCallback> mKeyBoardCallbacks;
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_KEY_BOARD_LONG_PRESS_DEL) {
+                dispatchTextDelClickedEvent();
+                sendEmptyMessageDelayed(MSG_KEY_BOARD_LONG_PRESS_DEL, KEY_BOARD_LONG_PRESS_DEL_TIMER_INTERVAL);
+            }
+        }
+    };
+
     public KeyBoardLayout(Context context) {
         super(context);
         init(context, null);
@@ -116,28 +131,20 @@ public class KeyBoardLayout extends RecyclerView {
             int attr = a.getIndex(i);
             if (attr == R.styleable.KeyBoardLayout_key_layout_background) {
                 setKeyLayoutBackgroundRes(a.getResourceId(attr, 0));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_item_background) {
                 setKeyItemBackgroundRes(a.getResourceId(attr, 0));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_text_color) {
                 setKeyTextColor(a.getResourceId(attr, 0));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_text_size) {
                 setKeyTextSize(a.getDimensionPixelSize(attr, 20));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_board_del_res) {
                 setKeyDelRes(a.getResourceId(attr, 0));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_board_clear_text) {
                 setKeyClearText(a.getText(attr));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_board_type) {
                 setKeyBoardType(getSafetyKeyBoardType(a.getInt(attr, 0)));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_board_with_line) {
                 setDrawLine(a.getBoolean(attr, false));
-
             } else if (attr == R.styleable.KeyBoardLayout_key_board_line_res) {
                 setLineRes(a.getResourceId(attr, 0));
             }
@@ -357,6 +364,18 @@ public class KeyBoardLayout extends RecyclerView {
                     handleInputKey(mKeyBoardAdapter.getItem(position));
                 }
             });
+            mKeyBoardAdapter.setLongPressStatusCallback(new KeyItemLayout.LongPressStatusCallback() {
+                @Override
+                public void onLongPressTriggered(Key key) {
+                    KeyBoardLayout.this.onLongPressTriggered(key);
+                }
+
+                @Override
+                public void onLongPressReleased(Key key) {
+                    KeyBoardLayout.this.onLongPressReleased(key);
+                }
+
+            });
             setLayoutManager(new GridLayoutManager(getContext(), 3));
             setAdapter(mKeyBoardAdapter);
             setVisibility(VISIBLE);
@@ -365,6 +384,43 @@ public class KeyBoardLayout extends RecyclerView {
         mKeyBoardAdapter.clear();
         mKeyBoardAdapter.addAll(mKeys);
         checkDrawLine();
+    }
+
+    /**
+     * on long press triggered.
+     *
+     * @param key
+     */
+    protected void onLongPressTriggered(Key key) {
+        cancelLongDelEvent();
+        if (isDelKey(key)) {
+            triggerLongDelEvent();
+        }
+    }
+
+    /**
+     * long press release.
+     *
+     * @param key
+     */
+    protected void onLongPressReleased(Key key) {
+        cancelLongDelEvent();
+    }
+
+    private boolean isDelKey(Key key) {
+        if (key.getKeyType() == Key.TYPE_IMAGE) {
+            KeyImage keyImage = (KeyImage) key;
+            return keyImage.getImageType() == KeyImage.IMAGE_DEL;
+        }
+        return false;
+    }
+
+    private void cancelLongDelEvent() {
+        mHandler.removeMessages(MSG_KEY_BOARD_LONG_PRESS_DEL);
+    }
+
+    private void triggerLongDelEvent() {
+        mHandler.sendEmptyMessage(MSG_KEY_BOARD_LONG_PRESS_DEL);
     }
 
     /**
@@ -476,6 +532,12 @@ public class KeyBoardLayout extends RecyclerView {
                 break;
         }
         Log.w(TAG, "handleKeyText, callback not matched.");
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cancelLongDelEvent();
     }
 
     /**

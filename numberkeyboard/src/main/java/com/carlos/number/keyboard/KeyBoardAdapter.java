@@ -19,8 +19,14 @@ public class KeyBoardAdapter extends RecyclerArrayAdapter<Key> {
     private static final int ITEM_TEXT = 0;
     private static final int ITEM_IMAGE = 5;
 
+    private KeyItemLayout.LongPressStatusCallback mLongPressStatusCallback;
+
     public KeyBoardAdapter(Context context) {
         super(context);
+    }
+
+    public void setLongPressStatusCallback(KeyItemLayout.LongPressStatusCallback longPressStatusCallback) {
+        mLongPressStatusCallback = longPressStatusCallback;
     }
 
     @Override
@@ -46,8 +52,7 @@ public class KeyBoardAdapter extends RecyclerArrayAdapter<Key> {
         throw new IllegalArgumentException("check you logic!");
     }
 
-
-    static class TextViewHolder extends BaseViewHolder<KeyText> {
+    class TextViewHolder extends BaseViewHolder<KeyText> {
 
         private TextView mKeyTextButton;
         private ImageView mKeyItemView;
@@ -56,12 +61,18 @@ public class KeyBoardAdapter extends RecyclerArrayAdapter<Key> {
             super(parent, R.layout.keyboard_text_layout);
             mKeyTextButton = (TextView) itemView.findViewById(R.id.keyboard_text);
             mKeyItemView = (ImageView) itemView.findViewById(R.id.keyboard_item_bg);
+            if (itemView instanceof KeyItemLayout && mLongPressStatusCallback != null) {
+                ((KeyItemLayout) itemView).setLongPressStatusCallback(mLongPressStatusCallback);
+            }
         }
 
         @Override
         public void setData(KeyText data) {
             Resources resources = getContext().getResources();
             itemView.setBackgroundResource(data.getKeyBackgroundRes());
+            if (itemView instanceof KeyItemLayout) {
+                ((KeyItemLayout) itemView).updateKey(data);
+            }
             mKeyItemView.setImageResource(data.getKeyItemBackgroundRes());
             mKeyTextButton.setText(data.getKeyText());
             mKeyTextButton.setTextColor(resources.getColor(data.getKeyTextColor()));
@@ -69,7 +80,7 @@ public class KeyBoardAdapter extends RecyclerArrayAdapter<Key> {
         }
     }
 
-    static class ImageViewHolder extends BaseViewHolder<KeyImage> {
+    class ImageViewHolder extends BaseViewHolder<KeyImage> {
 
         private ImageView mKeyImageView;
         private ImageView mKeyItemView;
@@ -78,13 +89,20 @@ public class KeyBoardAdapter extends RecyclerArrayAdapter<Key> {
             super(parent, R.layout.keyboard_image_layout);
             mKeyImageView = (ImageView) itemView.findViewById(R.id.keyboard_image);
             mKeyItemView = (ImageView) itemView.findViewById(R.id.keyboard_item_bg);
+            if (itemView instanceof KeyItemLayout && mLongPressStatusCallback != null) {
+                ((KeyItemLayout) itemView).setLongPressStatusCallback(mLongPressStatusCallback);
+            }
         }
 
         @Override
         public void setData(KeyImage data) {
             itemView.setBackgroundResource(data.getKeyBackgroundRes());
+            if (itemView instanceof KeyItemLayout) {
+                ((KeyItemLayout) itemView).updateKey(data);
+            }
             mKeyItemView.setImageResource(data.getKeyItemBackgroundRes());
             mKeyImageView.setImageResource(data.getImageRes());
         }
     }
+
 }
