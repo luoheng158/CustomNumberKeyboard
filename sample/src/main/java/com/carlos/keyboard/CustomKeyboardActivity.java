@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
-public class MainActivity extends AppCompatActivity {
+public class CustomKeyboardActivity extends AppCompatActivity {
 
     private CurrencyEditText mCurrencyTwoDecimalDigitsView;
     private CurrencyEditText mCurrencyNoneDecimalDigitsView;
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_custom);
         mCurrencyTwoDecimalDigitsView = (CurrencyEditText) findViewById(R.id.et_currency1);
         mCurrencyTwoDecimalDigitsView.requestFocus();
         mCurrencyTwoDecimalDigitsView.setFocusableInTouchMode(true);
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPhoneNumberEditText = (NumberDecimalEditText) findViewById(R.id.et_phone_number);
         mPhoneNumberEditText.setOnFocusChangeListener(mNumberWithClearKeyboard);
-        mPhoneNumberLineEditText =  (NumberDecimalEditText) findViewById(R.id.et_phone_number_line);
+        mPhoneNumberLineEditText = (NumberDecimalEditText) findViewById(R.id.et_phone_number_line);
         mPhoneNumberLineEditText.setOnFocusChangeListener(mNumberWithClearWitｈLineKeyboard);
 
         mKeyBoardLayout = (KeyBoardLayout) findViewById(R.id.keyboard_layout);
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mKeyBoardLayout.showKeyBoard();
     }
 
-    private View.OnFocusChangeListener mNumberWithDecimalsKeyboard =  new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener mNumberWithDecimalsKeyboard = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnFocusChangeListener mNumberWithClearKeyboard =  new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener mNumberWithClearKeyboard = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnFocusChangeListener mNumberWithClearWitｈLineKeyboard =  new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener mNumberWithClearWitｈLineKeyboard = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {

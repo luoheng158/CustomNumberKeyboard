@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.EditText;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +26,19 @@ import java.util.regex.Pattern;
 
 public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLayout.KeyBoardTextCallback,
         KeyBoardLayout.KeyBoardDelCallback, KeyBoardLayout.KeyBoardClearAllCallback {
+
+    private static final String KEYCODE_0 = "0";
+    private static final String KEYCODE_1 = "1";
+    private static final String KEYCODE_2 = "2";
+    private static final String KEYCODE_3 = "3";
+    private static final String KEYCODE_4 = "4";
+    private static final String KEYCODE_5 = "5";
+    private static final String KEYCODE_6 = "6";
+    private static final String KEYCODE_7 = "7";
+    private static final String KEYCODE_8 = "8";
+    private static final String KEYCODE_9 = "9";
+
+    private static final InputFilter[] NO_FILTERS = new InputFilter[0];
 
     private static final String MATCHER_PATTERN_PLACE_HOLDER = "^\\d*(\\.\\d{0,%s}){0,%s}$";
 
@@ -39,6 +57,8 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
     private int mInputMaxIntegers;
 
     private boolean mMayChangedByClipboard;
+
+    private boolean mDisableSysKeyboard;
 
     public NumberDecimalEditText(Context context) {
         super(context);
@@ -60,22 +80,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
         setText("");
         mNoLimitLengthPatternCache = new HashMap<>();
         mLimitLengthPatternCache = new HashMap<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setShowSoftInputOnFocus(false);
-        } else {
-            try {
-                Method method = EditText.class.getMethod("setShowSoftInputOnFocus", new Class[]{boolean.class});
-                method.setAccessible(true);
-                method.invoke(this, false);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
+        mDisableSysKeyboard = true;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberDecimalEditText);
         int n = a.getIndexCount();
         for (int i = 0; i < n; i++) {
@@ -84,10 +89,29 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
                 setDecimalDigits(a.getInt(attr, 0));
             } else if (attr == R.styleable.NumberDecimalEditText_max_input_integers) {
                 setInputMaxIntegers(a.getInt(attr, 10));
+            } else if (attr == R.styleable.NumberDecimalEditText_disable_sys_keyboard) {
+                mDisableSysKeyboard = a.getBoolean(attr, true);
             }
         }
         // recycle.
         a.recycle();
+        if (mDisableSysKeyboard) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setShowSoftInputOnFocus(false);
+            } else {
+                try {
+                    Method method = EditText.class.getMethod("setShowSoftInputOnFocus", new Class[]{boolean.class});
+                    method.setAccessible(true);
+                    method.invoke(this, false);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         // check if the text may be changed by Clipboard.
         // although we want to disable Clipboard, but in some devices, may not effect.
@@ -130,7 +154,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
         try {
             mRawStringBuffer.deleteCharAt(rawSelection - 1);
             updateText(rawSelection - 1);
-        } catch (StringIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             clearRawText();
         }
     }
@@ -157,18 +181,29 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
             }
             rawSelection++;
             updateText(rawSelection);
-        } catch (StringIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             clearRawText();
         }
     }
 
     private void updateText(int rawSelection) {
+        mMayChangedByClipboard = false;
         String rawStr = mRawStringBuffer.toString();
         String formatStr = formatDisplayText(rawStr);
-        mMayChangedByClipboard = false;
-        setText(formatStr);
+        Editable editable = getText();
+        InputFilter[] inputFilter = editable.getFilters();
+        // clear filter.
+        editable.setFilters(NO_FILTERS);
+        editable.clear();
+        editable.append(formatStr);
+        // restore.
+        editable.setFilters(inputFilter);
+        int selection = resolveDisplaySelectionFormRawSection(rawSelection);
+        if (selection > editable.length()) {
+            selection = editable.length();
+        }
+        setSelection(selection);
         mMayChangedByClipboard = true;
-        setSelection(resolveDisplaySelectionFormRawSection(rawSelection));
     }
 
     /**
@@ -276,6 +311,7 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
         return rawSelection;
     }
 
+
     /**
      * ontain raw StringBuffer.
      *
@@ -283,5 +319,77 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      */
     public StringBuffer getRawStringBuffer() {
         return mRawStringBuffer;
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        if (mDisableSysKeyboard) {
+            return super.onCreateInputConnection(outAttrs);
+        }
+        return new InputConnectionWrapper(super.onCreateInputConnection(outAttrs), true) {
+            @Override
+            public boolean commitText(CharSequence text, int newCursorPosition) {
+                if (text == null) {
+                    return false;
+                }
+                if (STR_DOT.equals(text.toString())) {
+                    onTextInput(STR_DOT);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean deleteSurroundingText(int beforeLength, int afterLength) {
+                // magic: in latest Android, deleteSurroundingText(1, 0) will be called for backspace
+                if (beforeLength == 1 && afterLength == 0) {
+                    // backspace
+                    return sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+                }
+                return super.deleteSurroundingText(beforeLength, afterLength);
+            }
+
+            @Override
+            public boolean sendKeyEvent(KeyEvent event) {
+                if (event.getAction() != KeyEvent.ACTION_UP) {
+                    return false;
+                }
+                switch (event.getKeyCode()) {
+                    case KeyEvent.KEYCODE_0:
+                        onTextInput(KEYCODE_0);
+                        break;
+                    case KeyEvent.KEYCODE_1:
+                        onTextInput(KEYCODE_1);
+                        break;
+                    case KeyEvent.KEYCODE_2:
+                        onTextInput(KEYCODE_2);
+                        break;
+                    case KeyEvent.KEYCODE_3:
+                        onTextInput(KEYCODE_3);
+                        break;
+                    case KeyEvent.KEYCODE_4:
+                        onTextInput(KEYCODE_4);
+                        break;
+                    case KeyEvent.KEYCODE_5:
+                        onTextInput(KEYCODE_5);
+                        break;
+                    case KeyEvent.KEYCODE_6:
+                        onTextInput(KEYCODE_6);
+                        break;
+                    case KeyEvent.KEYCODE_7:
+                        onTextInput(KEYCODE_7);
+                        break;
+                    case KeyEvent.KEYCODE_8:
+                        onTextInput(KEYCODE_8);
+                        break;
+                    case KeyEvent.KEYCODE_9:
+                        onTextInput(KEYCODE_9);
+                        break;
+                    case KeyEvent.KEYCODE_DEL:
+                        onTextDelClicked();
+                        break;
+                }
+                return false;
+            }
+        };
     }
 }

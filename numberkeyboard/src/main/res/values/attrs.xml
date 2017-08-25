@@ -19,6 +19,7 @@
     <declare-styleable name="NumberDecimalEditText">
         <attr name="decimal_digits" format="integer"/>
         <attr name="max_input_integers" format="integer"/>
+        <attr name="disable_sys_keyboard" format="boolean"/>
     </declare-styleable>
 
 </resources>

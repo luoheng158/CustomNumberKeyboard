@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <com.carlos.number.keyboard.CurrencyEditText
+            android:id="@+id/et_currency1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="right|center_vertical"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textColorHint="#cccccc"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"
+            app:decimal_digits="2"
+            app:disable_sys_keyboard="false"
+            app:max_input_integers="12"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FF2D4BA3"/>
+
+        <com.carlos.number.keyboard.CurrencyEditText
+            android:id="@+id/et_currency2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="left|center_vertical"
+            android:hint="0"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textColorHint="#cccccc"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"
+            app:decimal_digits="0"
+            app:disable_sys_keyboard="false"
+            app:max_input_integers="12"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FF2D4BA3"/>
+
+        <com.carlos.number.keyboard.NumberDecimalEditText
+            android:id="@+id/et_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="left|center_vertical"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textColorHint="#cccccc"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"
+            app:decimal_digits="2"
+            app:disable_sys_keyboard="false"
+            app:max_input_integers="12"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FF2D4BA3"/>
+
+        <com.carlos.number.keyboard.NumberDecimalEditText
+            android:id="@+id/et_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="left|center_vertical"
+            android:hint="phone number"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textColorHint="#cccccc"
+            android:textCursorDrawable="@null"
+            android:textSize="20sp"
+            app:decimal_digits="0"
+            app:disable_sys_keyboard="false"
+            app:max_input_integers="11"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FF2D4BA3"/>
+
+    </LinearLayout>
+</ScrollView>

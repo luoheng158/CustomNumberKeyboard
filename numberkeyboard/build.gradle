@@ -36,7 +36,7 @@ ext {
     publishedGroupId = 'com.carlos.widget'
     artifact = 'numberkeyboard'
     libraryName = 'numberkeyboard'
-    libraryVersion = '0.1.12'
+    libraryVersion = '1.1.0'
 
     libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
 
