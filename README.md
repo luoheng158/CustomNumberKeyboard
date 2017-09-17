@@ -93,7 +93,7 @@ decimal_digits and max_input_integers are used to config the input limits.we als
 License
 -------
 
-    Copyright 2017 Wasabeef
+    Copyright 2017, Carlos Luo.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
