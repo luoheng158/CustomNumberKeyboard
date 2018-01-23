@@ -3,6 +3,8 @@ package com.carlos.number.keyboard;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -26,6 +28,9 @@ import java.util.regex.Pattern;
 
 public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLayout.KeyBoardTextCallback,
         KeyBoardLayout.KeyBoardDelCallback, KeyBoardLayout.KeyBoardClearAllCallback {
+
+    private static final String EXTRA_RAW_DATA = "extra_raw_data";
+    private static final String EXTRA_SUPER_STATE = "extra_super_state";
 
     private static final String KEYCODE_0 = "0";
     private static final String KEYCODE_1 = "1";
@@ -319,6 +324,24 @@ public class NumberDecimalEditText extends NoMenuEditText implements KeyBoardLay
      */
     public StringBuffer getRawStringBuffer() {
         return mRawStringBuffer;
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_SUPER_STATE, super.onSaveInstanceState());
+        bundle.putString(EXTRA_RAW_DATA, mRawStringBuffer.toString());
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            super.onRestoreInstanceState(((Bundle) state).getParcelable(EXTRA_SUPER_STATE));
+            setRawText(((Bundle) state).getString(EXTRA_RAW_DATA));
+            return;
+        }
+        super.onRestoreInstanceState(state);
     }
 
     @Override

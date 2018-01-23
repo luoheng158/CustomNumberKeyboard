@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 
@@ -36,7 +39,7 @@ ext {
     publishedGroupId = 'com.carlos.widget'
     artifact = 'numberkeyboard'
     libraryName = 'numberkeyboard'
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     libraryDescription = 'A custom keyboard of android that can input number or decimals, currency  etc.'
 
